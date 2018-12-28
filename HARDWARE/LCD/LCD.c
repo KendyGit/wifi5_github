@@ -223,33 +223,33 @@ void Ht1621_Init(void)
 	Ht1621WrCmd(LCD_ON); 
 	if (SetPC_flag == 1)
 	{
-//		delay_ms(10);
-//		LCD_All_Use();
-//		delay_ms(500);
-//		LCD_All_Off();	   //开机全关
-//		delay_ms(500);
-//		LCD_All_Use();
-//		delay_ms(500);
-//		LCD_All_Off();	   //开机全关
-//		delay_ms(500);	
-//		LCD_All_Use();
-//		delay_ms(500);
+		delay_ms(10);
+		LCD_All_Use();
+		delay_ms(500);
+		LCD_All_Off();	   //开机全关
+		delay_ms(500);
+		LCD_All_Use();
+		delay_ms(500);
+		LCD_All_Off();	   //开机全关
+		delay_ms(500);	
+		LCD_All_Use();
+		delay_ms(500);
 		LCD_All_Off();	   //开机全关
 		delay_ms(500);	
 	}
 	else
 	{
-//		delay_ms(10);
-//		LCD_On_NoPC_Init_Dis(0x00);
-//		delay_ms(500);
-//		LCD_All_Off();	   //开机全关
-//		delay_ms(500);
-//		LCD_On_NoPC_Init_Dis(0x00);
-//		delay_ms(500);
-//		LCD_All_Off();	   //开机全关
-//		delay_ms(500);	
-//		LCD_On_NoPC_Init_Dis(0x00);
-//		delay_ms(500);
+		delay_ms(10);
+		LCD_On_NoPC_Init_Dis(0x00);
+		delay_ms(500);
+		LCD_All_Off();	   //开机全关
+		delay_ms(500);
+		LCD_On_NoPC_Init_Dis(0x00);
+		delay_ms(500);
+		LCD_All_Off();	   //开机全关
+		delay_ms(500);	
+		LCD_On_NoPC_Init_Dis(0x00);
+		delay_ms(500);
 		LCD_All_Off();	   //开机全关
 		delay_ms(500);	
 	}
@@ -328,7 +328,7 @@ void LCD_In_Temp(u16 temp, u8 All_Action_sensor_Status_display)
 		Lcd_A2829A3031[0]=0xef;
 		Lcd_A2829A3031[1]=0xc0;
 		}	
-		else if((temp>475))
+		else if((temp>475)&& (temp<600))
 		{
 		Lcd_A2829A3031[0]=0xff;
 		Lcd_A2829A3031[1]=0xc0;
@@ -604,6 +604,9 @@ void LCD_Dis_Er3(void)
 void LCD_Dis_ErH(void) 
 { 
 	Ht1621WrAllData(20,DispErHTab,4);	 //开显示
+		Lcd_A2829A3031[0]=0;
+		Lcd_A2829A3031[1]=0;
+	Ht1621WrAllData(28,Lcd_A2829A3031,2); //从地址14开始写入
 	LCD_BK_Light=LCD_BK_Light_ON;				 //开背光
 } 
 //========================================================================
@@ -955,7 +958,11 @@ void LCD_Action_sensor_Status_display(u8 temp)
 	if (temp1==0x20)LCD_0_1_Data|=0x08;
 	else LCD_0_1_Data&=0xf7;
 	temp2 = temp & 0x80;
-	if (temp2==0x80)temp|=0x20;
+	if (temp2==0x80)
+			{	
+				temp|=0x20;
+				temp&=0x7f;
+			}
 	else temp&=0xDF;//0xFB; 
 	Ht1621WrOneData(0,LCD_0_1_Data);
 	Ht1621WrOneData(30,temp);
